@@ -28,11 +28,13 @@ output = mido.open_output('f_midi')
 
 #setup GPIO
 for LED in GPIO_COLUMNS:
-   pi.set_mode(LED, pigpio.INPUT)
-   pi.set_pull_up_down(LED, pigpio.PUD_UP)
+    print("Setup input GPIO " + str(LED))
+    pi.set_mode(LED, pigpio.INPUT)
+    pi.set_pull_up_down(LED, pigpio.PUD_UP)
 
 for LED in GPIO_ROWS:
-   pi.set_mode(LED, pigpio.OUTPUT)
+    print("Setup output GPIO " + str(LED_)
+    pi.set_mode(LED, pigpio.OUTPUT)
 
 while True:
     for i in range(0 , KEYS_ROWS):
@@ -46,6 +48,7 @@ while True:
             if state != KEY_STATES[i][j]:
                 output.send(mido.Message(KEY_STATE[state], note = KEY_TO_MIDI_NOTE[i][j] , velocity = 127))
                 KEY_STATES[i][j] = state
+                print("Key " + str(KEY_TO_MIDI_NOTE[i][j]) + " " + KEY_STATE[state])
                 
     pi.write(GPIO_ROWS[KEYS_ROWS-1],1)
             
