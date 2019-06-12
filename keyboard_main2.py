@@ -32,7 +32,8 @@ pi = pigpio.pi()
 output = mido.open_output('f_midi')
 
 loop_counter = 0
-loop_time = []
+loop_counts = 10
+loop_time = [0.0] * loop_counts
 
 #setup GPIO
 for i in GPIO_COLUMNS:
@@ -45,16 +46,18 @@ for i in GPIO_ROWS:
     pi.set_mode(i, pigpio.OUTPUT)
 
 while True:
-    start_time = time.time()
+    #start_time = time.time()
     for i in range(0 , KEYS_ROWS):
         #set i row low
         if i > 0:
             pi.write(GPIO_ROWS[i-1],1)
         pi.write(GPIO_ROWS[i],0)
-        gpio_state = pi.read_back_1()
+        gpio_state = pi.read_bank_1()
+        #if i == 0:
+            #print(bin(gpio_state))
         for j in range(0 , KEYS_COLUMNS):
             #read column
-            state = (gpio_state & (2 ^ GPIO_COLUMNS[j])) > 0
+            state = (gpio_state & (1 << GPIO_COLUMNS[j])) > 0
             midi_note = KEY_TO_MIDI_NOTE[j][i]
             if KEY_STATES[midi_note] != state:
                 output.send(mido.Message(KEY_VALUE[state], note = midi_note , velocity = 127))
@@ -62,9 +65,10 @@ while True:
                 #print("Key ",midi_note,KEY_VALUE[state])
                 
     pi.write(GPIO_ROWS[KEYS_ROWS-1],1)
-    end_time = time.time()
-    loop_time[loop_counter] = (end_time - start_time)
-    if(loop_counter > 10):
-        loop_counter = 0
-        print("Loop average",sum(loop_time) / len(loop_time))
+    #end_time = time.time()
+    #loop_time[loop_counter] = (end_time - start_time)
+    #loop_counter = loop_counter + 1
+    #if(loop_counter >= loop_counts):
+        #loop_counter = 0
+        #print("Loop average",sum(loop_time) / len(loop_time))
             
