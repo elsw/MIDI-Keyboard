@@ -31,6 +31,9 @@ KEY_VALUE = ['note_on','note_off']
 pi = pigpio.pi()
 output = mido.open_output('f_midi')
 
+loop_counter = 0
+loop_time = []
+
 #setup GPIO
 for i in GPIO_COLUMNS:
     print("Setup input GPIO ",i)
@@ -42,6 +45,7 @@ for i in GPIO_ROWS:
     pi.set_mode(i, pigpio.OUTPUT)
 
 while True:
+    start_time = time.time()
     for i in range(0 , KEYS_ROWS):
         #set i row low
         if i > 0:
@@ -57,4 +61,8 @@ while True:
                 #print("Key ",midi_note,KEY_VALUE[state])
                 
     pi.write(GPIO_ROWS[KEYS_ROWS-1],1)
-            
+    end_time = time.time()
+    loop_time[loop_counter] = (end_time - start_time)
+    if(loop_counter > 10):
+        loop_counter = 0
+        print("Loop average",sum(loop_time) / len(loop_time))
