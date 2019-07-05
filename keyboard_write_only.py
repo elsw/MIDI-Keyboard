@@ -1,6 +1,8 @@
 import mido
 import pigpio
 import time
+import board
+import neopixel
 
 TOTAL_KEYS = 61
 KEYS_ROWS = 8
@@ -46,7 +48,7 @@ for i in GPIO_ROWS:
     pi.set_mode(i, pigpio.OUTPUT)
 
 while True:
-    #start_time = time.time()
+    start_time = time.time()
     for i in range(0 , KEYS_ROWS):
         #set i row low
         if i > 0:
@@ -65,10 +67,11 @@ while True:
                 #print("Key ",midi_note,KEY_VALUE[state])
                 
     pi.write(GPIO_ROWS[KEYS_ROWS-1],1)
+    
     #end_time = time.time()
     #loop_time[loop_counter] = (end_time - start_time)
     #loop_counter = loop_counter + 1
     #if(loop_counter >= loop_counts):
-        #loop_counter = 0
-        #print("Loop average",sum(loop_time) / len(loop_time))
+    #    loop_counter = 0
+    #    print("Loop average",sum(loop_time) / len(loop_time))
             
